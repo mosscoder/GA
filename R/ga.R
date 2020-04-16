@@ -29,6 +29,7 @@ ga <- function(type = c("binary", "real-valued", "permutation"),
                                 control = list(fnscale = -1, maxit = 100)),
                keepBest = FALSE,
                parallel = FALSE,
+               preschedule = TRUE,
                monitor = if(interactive()) gaMonitor else FALSE,
                seed = NULL) 
 {
@@ -233,7 +234,7 @@ ga <- function(type = c("binary", "real-valued", "permutation"),
                }
       }
       else
-        { Fitness <- foreach(i. = seq_len(popSize), .combine = "c") %DO%
+        { Fitness <- foreach(i. = seq_len(popSize), .combine = "c", .options.multicore = list(preschedule = preschedule)) %DO%
                      { if(is.na(Fitness[i.])) 
                          do.call(fitness, c(list(Pop[i.,]), callArgs)) 
                        else                   
